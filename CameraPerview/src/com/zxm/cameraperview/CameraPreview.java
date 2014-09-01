@@ -31,7 +31,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 /**
- * 现实预览的界面
+ * 照相机预览的界面
+ * api：http://developer.android.com/guide/topics/media/camera.html
  */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback ,Camera.AutoFocusCallback{
 	
@@ -89,9 +90,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder.addCallback(this);
         //为了实现照片预览功能，需要将SurfaceHolder的类型设置为PUSH 
         //这样，画图缓存就由Camera类来管理，画图缓存是独立于Surface的 
+        //3.0之前需要
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+        	//2.3以后支持检测摄像头的数量
             if (Camera.getNumberOfCameras() > cameraId) {
                 mCameraId = cameraId;
             } else {
@@ -102,6 +105,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+        	//2.3以后能打开指定摄像头
             mCamera = Camera.open(mCameraId);//must release() 
         } else {
             mCamera = Camera.open();
@@ -131,6 +135,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try {
+        	//surface被创建，将预览显示到holder上
             mCamera.setPreviewDisplay(mHolder);
         } catch (IOException e) {
             mCamera.release();
