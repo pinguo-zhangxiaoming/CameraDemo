@@ -12,6 +12,8 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.Toast;
 
+import com.zxm.cameraperview.PreViewProvider.LayoutMode;
+
 public class MainActivity extends Activity{
 
 	private static final String TAG = "MainActivity";
@@ -30,10 +32,10 @@ public class MainActivity extends Activity{
 	@Override
     protected void onResume() {
         super.onResume();
-        if(checkCameraHardware(this)){
+        if(!checkCameraHardware(this)){
         	Toast.makeText(this, "Your device isn't support camera.", Toast.LENGTH_LONG).show();
         }else{
-        	mPreview = new CameraPreview(this, 0, CameraPreview.LayoutMode.FitToParent);
+        	mPreview = new CameraPreview(this, 0, LayoutMode.FitToParent);
         	LayoutParams previewLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         	mParentView.addView(mPreview, 0, previewLayoutParams);
         	Button takePicBtn = new Button(this);
@@ -59,7 +61,7 @@ public class MainActivity extends Activity{
     protected void onPause() {
         super.onPause();
         if(mPreview != null){
-        	mPreview.stop();
+        	mPreview.stopCamera();
         	mParentView.removeView(mPreview); // This is necessary.
         	mPreview = null;
         }
